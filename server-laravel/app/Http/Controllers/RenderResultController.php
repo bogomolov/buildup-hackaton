@@ -12,7 +12,8 @@ class RenderResultController extends Controller
      */
     public function index()
     {
-        //
+        $results = RenderResult::where('user_id', Auth::user()->id)->orderBy('updated_at', 'desc');
+        return $results;
     }
 
     /**
@@ -28,7 +29,7 @@ class RenderResultController extends Controller
      */
     public function show(RenderResult $renderResult)
     {
-        //
+        return $renderResult;
     }
 
     /**

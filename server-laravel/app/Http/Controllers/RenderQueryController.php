@@ -12,7 +12,8 @@ class RenderQueryController extends Controller
      */
     public function index()
     {
-        //
+        $requests = RenderQuery::where('user_id', Auth::user()->id)->orderBy('updated_at', 'desc');
+        return $requests;
     }
 
     /**
@@ -20,7 +21,14 @@ class RenderQueryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request = RenderQuery::create([
+            'user_id' => Auth::user()->id,
+            'box_coords' => $request->input('box_coords'),
+            'filters' => $request->input('filters'),
+            'status' => 'registered'
+        ]);
+        $request->save();
+        return $request;
     }
 
     /**
@@ -28,7 +36,7 @@ class RenderQueryController extends Controller
      */
     public function show(RenderQuery $renderQuery)
     {
-        //
+        return $renderQuery;
     }
 
     /**
@@ -36,7 +44,13 @@ class RenderQueryController extends Controller
      */
     public function update(Request $request, RenderQuery $renderQuery)
     {
-        //
+        $renderQuery->update([
+            'box_coords' => $request->input('box_coords'),
+            'filters' => $request->input('filters'),
+            'status' => $request->input('status')
+        ]);
+        $renderQuery->save();
+        return $renderQuery;
     }
 
     /**
@@ -44,6 +58,6 @@ class RenderQueryController extends Controller
      */
     public function destroy(RenderQuery $renderQuery)
     {
-        //
+        $renderQuery->delete();
     }
 }
