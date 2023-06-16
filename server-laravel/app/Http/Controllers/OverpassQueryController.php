@@ -13,7 +13,8 @@ class OverpassQueryController extends Controller
      */
     public function index()
     {
-        //
+        $overpasses = OverpassQuery::all();
+        return $overpasses;
     }
 
     /**
@@ -29,7 +30,7 @@ class OverpassQueryController extends Controller
      */
     public function show(OverpassQuery $overpassQuery)
     {
-        //
+        return $overpassQuery;
     }
 
     /**
