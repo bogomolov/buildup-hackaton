@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiAuthController;
+use App\Http\Controllers\RenderQueryController;
+use App\Http\Controllers\RenderResultController;
+use App\Http\Controllers\OverpassQueryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +19,10 @@ use App\Http\Controllers\ApiAuthController;
 */
 
 Route::post('/login', [ApiAuthController::class, 'login']);
+
+Route::resource('renderquery', RenderQueryController::class);
+Route::resource('renderresult', RenderResultController::class);
+Route::resource('overpassquery', OverpassQueryController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
