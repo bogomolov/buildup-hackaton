@@ -1,6 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-
+import axios from 'axios';
 
 const baseURL = 'https://dev.sodi.center/';
 
