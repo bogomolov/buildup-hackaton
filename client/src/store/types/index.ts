@@ -49,5 +49,6 @@ export type {
     RootState,
     Dependencies,
     Middlewares,
+    AppDispatch,
     Reducers,
 };
