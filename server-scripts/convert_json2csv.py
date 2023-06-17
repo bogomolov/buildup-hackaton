@@ -1,10 +1,10 @@
 import json
 import csv
 
-writer = csv.DictWriter(open('server-scripts/novoross_city_objects.csv','w'),
+writer = csv.DictWriter(open('server-scripts/novoross_city_objects2.csv','w'),
                         fieldnames=['id','name','address','type','levels','latitude','longitude'])
 
-with open('server-scripts/osm_schools.json') as j:
+with open('server-scripts/osm_clinics.json') as j:
     objects = json.load(j)
     for obj in objects:
         print(obj)
