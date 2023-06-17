@@ -21,6 +21,16 @@ class RenderQueryController extends Controller
      */
     public function store(Request $request)
     {
+        /*
+        верхний левый и нижний правый углы:
+        box_coords = [ 
+            {"latitude": 44.6731393, "longitude": 37.7876269},
+            {"latitude": 44.9731393, "longitude": 37.9876269},
+        ]
+
+        фильтры:
+        filters = ["clinic", "hospital"]
+        */
         $request = RenderQuery::create([
             'user_id' => Auth::user()->id,
             'box_coords' => $request->input('box_coords'),
