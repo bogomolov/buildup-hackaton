@@ -101,8 +101,8 @@ class RenderQueryController extends Controller
                     $filters
                 );
                 $color = $this->get_color(
-                    $filter_params[$filters[0]]["color"], 
-                    $filter_params[$filters[0]]["distance"], 
+                    $this->filter_params[$filters[0]]["color"], 
+                    $this->filter_params[$filters[0]]["distance"], 
                     $distance
                 );
 
