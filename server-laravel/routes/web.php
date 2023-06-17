@@ -35,10 +35,10 @@ Route::get('/testgetarray', function () {
         [
             'box_coords' => [ 
                 0 => [
-                    'latitude' => 44.69, 'longitude' => 37.71
+                    'latitude' => 44.766887, 'longitude' => 37.700247
                 ],
                 1 => [
-                    'latitude' => 44.74, 'longitude' => 37.78
+                    'latitude' => 44.649587, 'longitude' => 37.869169
                 ]
             ],
             'filters' => ['school']
