@@ -16,6 +16,8 @@ class RenderQueryController extends Controller
         $flats = Building::whereBetween('latitude', [$lat_min, $lat_max])->
             whereBetween('longitude', [$lon_min, $lon_max])->sum('flats');
         
+
+        dd($flats);
         return $flats*$CITIZENS_PER_FLAT;
     }
 
@@ -55,7 +57,7 @@ class RenderQueryController extends Controller
                 $row[] = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
-                    'citizens' => get_citizens_in_cell(
+                    'citizens' => $this->get_citizens_in_cell(
                         $lat_min + $i*$cell_size,
                         $lat_min + ($i+1)*$cell_size,
                         $lon_min + $i*$cell_size,
