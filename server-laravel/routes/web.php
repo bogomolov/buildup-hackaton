@@ -40,7 +40,8 @@ Route::get('/testgetarray', function () {
                 1 => [
                     'latitude' => 44.74, 'longitude' => 37.78
                 ]
-            ]
+            ],
+            'filters' => ['school']
         ]
     );
     $t = new RenderQueryController();

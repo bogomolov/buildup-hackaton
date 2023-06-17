@@ -9,6 +9,35 @@ use App\Models\CityObject;
 
 class RenderQueryController extends Controller
 {
+    protected $filter_colors = [
+        "school" => "#0066cc",
+        "clinic" => "#ff007f",
+        "hospital" => "#cc0000"
+    ];
+
+    public static function get_color($target_color, $max_dist, $real_dist) {
+        list($base_r, $base_g, $base_b) = sscanf('#fffade', "#%02x%02x%02x");
+        list($target_r, $target_g, $target_b) = sscanf($target_color, "#%02x%02x%02x");
+
+        $real_r = ($base_r - $target_r)*($real_dist/$max_dist) + $target_r;
+        $real_g = ($base_g - $target_g)*($real_dist/$max_dist) + $target_g;
+        $real_b = ($base_b - $target_b)*($real_dist/$max_dist) + $target_b;
+
+        $real_color = sprintf("#%02x%02x%02x", $real_r, $real_g, $real_b);
+
+        return $real_color;
+    }
+
+    public static function get_dist_from_filter_meter($lat, $lon, $filters)
+    {
+        $LON2KM = 78.8;
+        $LAT2KM = 111;
+
+        $obj = CityObjects::/*whereRaw('(latitude-?)*(latitude-?) + (longitude-?)*(longitude-?)', [$lat, $lat, $lon, $lon])
+        ->*/whereIn('type', $filters)->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
+        return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$LON2KM, 2));
+    }
+
     public static function get_citizens_in_cell($lat_min, $lat_max, $lon_min, $lon_max)
     {
         $CITIZENS_PER_FLAT = 3;
@@ -35,6 +64,8 @@ class RenderQueryController extends Controller
 
         $box_coords = $request->input('box_coords');
 
+        $filters = $request->input('filters');
+
         # $query = RenderQuery::findOrFail($request->input('request_id'));
 
         $lat_min = min($box_coords[0]['latitude'], $box_coords[1]['latitude']);
@@ -52,6 +83,9 @@ class RenderQueryController extends Controller
         for($i = 0; $i < $lat_delta/$cell_size; $i++) {
             $row = array();
             for($j = 0; $j < $lon_delta/$cell_size; $j++) {
+                $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
+                $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
+
                 $row[] = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
