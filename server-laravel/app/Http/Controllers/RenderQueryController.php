@@ -32,7 +32,7 @@ class RenderQueryController extends Controller
         $real_g = ($base_g - $target_g)*($real_dist/$max_dist) + $target_g;
         $real_b = ($base_b - $target_b)*($real_dist/$max_dist) + $target_b;
 
-        $real_color = sprintf("#%02x%02x%02x", $real_r, $real_g, $real_b);
+        $real_color = sprintf("#%02x%02x%02x", min(255,$real_r), min(255,$real_g), min(255,$real_b));
 
         return $real_color;
     }
