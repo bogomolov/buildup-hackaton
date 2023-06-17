@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\RenderResult;
+use App\Models\RenderQuery;
+use App\Models\Building;
+use App\Models\CityObject;
 use Illuminate\Http\Request;
 
 class RenderResultController extends Controller
@@ -16,12 +19,14 @@ class RenderResultController extends Controller
         return $results;
     }
 
+
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
