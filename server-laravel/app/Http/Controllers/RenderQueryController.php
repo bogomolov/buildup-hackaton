@@ -11,7 +11,12 @@ class RenderQueryController extends Controller
 {
     public static function get_citizens_in_cell($lat_min, $lat_max, $lon_min, $lon_max)
     {
-        return 1;
+        $CITIZENS_PER_FLAT = 3;
+
+        $flats = Building::whereBetween('latitude', [$lat_min, $lat_max])->
+            whereBetween('longitude', [$lon_min, $lon_max])->sum('flats');
+        
+        return $flats*$CITIZENS_PER_FLAT;
     }
 
     /**

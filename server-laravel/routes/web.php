@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RenderQueryController;
 use Inertia\Inertia;
 
 /*
@@ -28,6 +29,21 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/testgetarray', function () {
+    return RenderQueryController::query(
+        [
+            'box_coords' => [ 
+                0 => [
+                    'latitude' => 44.6, 'longitude' => 37.76
+                ],
+                1 => [
+                    'latitude' => 44.8, 'longitude' => 37.89
+                ]
+            ]
+        ]
+    );
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

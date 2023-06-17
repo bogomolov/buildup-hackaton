@@ -20,6 +20,8 @@ use App\Http\Controllers\OverpassQueryController;
 
 Route::post('/login', [ApiAuthController::class, 'login']);
 
+Route::post('/getarray', [RenderQueryController::class, 'query']);
+
 Route::resource('renderquery', RenderQueryController::class);
 Route::resource('renderresult', RenderResultController::class);
 Route::resource('overpassquery', OverpassQueryController::class);
