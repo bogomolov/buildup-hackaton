@@ -114,8 +114,8 @@ class RenderQueryController extends Controller
                 $citizens = $this->get_citizens_in_cell(
                     $lat_min + $cell_size*$i,
                     $lat_min + $cell_size*($i+1),
-                    $lon_min + $cell_size*$i,
-                    $lon_min + $cell_size*($i+1),
+                    $lon_min + $cell_size*$j,
+                    $lon_min + $cell_size*($j+1),
                     $include_planning
                 );
 
