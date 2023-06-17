@@ -1,0 +1,17 @@
+.header {
+  position: fixed;
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.1);
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9;
+
+  &__button-container {
+    width: 50%;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 20px;
+  }
+}
