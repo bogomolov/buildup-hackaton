@@ -7,7 +7,7 @@ const Hexagon = ({height, posX, posZ, color}) => {
     return (
         <mesh rotation={[-Math.PI, 0, 0]} ref={meshRef} position={[posX * ratio, height / 2, posZ * ratio]}>
             <cylinderGeometry args={[1, 1, height, 6]} />
-            <meshPhongMaterial color={color} intensity={0.75} />
+            <meshBasicMaterial transparent opacity={height === 0 ? 0.9 : 0.9} color={color} />
         </mesh>
     )
 }
