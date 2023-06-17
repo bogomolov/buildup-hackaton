@@ -16,6 +16,7 @@ class Building extends Model
         'levels',
         'flats',
         'latitude',
-        'longitude'
+        'longitude',
+        'planning'
     ];
 }
