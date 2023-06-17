@@ -35,7 +35,7 @@ Route::get('/testgetarray', function () {
         [
             'box_coords' => [ 
                 0 => [
-                    'latitude' => 44.71, 'longitude' => 37.74
+                    'latitude' => 44.69, 'longitude' => 37.71
                 ],
                 1 => [
                     'latitude' => 44.74, 'longitude' => 37.78

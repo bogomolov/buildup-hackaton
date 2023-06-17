@@ -13,11 +13,11 @@ class RenderQueryController extends Controller
     {
         $CITIZENS_PER_FLAT = 3;
 
-        $flats = Building::whereBetween('latitude', [$lat_min, $lat_max])->
-            whereBetween('longitude', [$lon_min, $lon_max])->sum('flats');
-        
+        $flats = Building::where('latitude', '>', $lat_min)->
+            where('latitude', '<', $lat_max)->
+            where('longitude', '>', $lon_min)->
+            where('longitude', '<', $lon_max)->sum('flats');
 
-        dd($flats);
         return $flats*$CITIZENS_PER_FLAT;
     }
 
@@ -58,10 +58,10 @@ class RenderQueryController extends Controller
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
                     'citizens' => $this->get_citizens_in_cell(
-                        $lat_min + $i*$cell_size,
-                        $lat_min + ($i+1)*$cell_size,
-                        $lon_min + $i*$cell_size,
-                        $lon_min + ($i+1)*$cell_size
+                        $lat_min + $cell_size*$i,
+                        $lat_min + $cell_size*($i+1),
+                        $lon_min + $cell_size*$i,
+                        $lon_min + $cell_size*($i+1)
                     ),
                     'color' => '#FFDDAA'
                 );
