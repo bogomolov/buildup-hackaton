@@ -42,7 +42,7 @@ class RenderQueryController extends Controller
         $LON2KM = 78.8;
         $LAT2KM = 111;
 
-        $obj = CityObjects::/*whereRaw('(latitude-?)*(latitude-?) + (longitude-?)*(longitude-?)', [$lat, $lat, $lon, $lon])
+        $obj = CityObject::/*whereRaw('(latitude-?)*(latitude-?) + (longitude-?)*(longitude-?)', [$lat, $lat, $lon, $lon])
         ->*/where('type', $filters[0])->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
         return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$LON2KM, 2));
     }
