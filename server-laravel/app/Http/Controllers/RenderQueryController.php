@@ -105,16 +105,20 @@ class RenderQueryController extends Controller
                     $this->filter_params[$filters[0]]["distance"], 
                     $distance
                 );
+                $citizens = $this->get_citizens_in_cell(
+                    $lat_min + $cell_size*$i,
+                    $lat_min + $cell_size*($i+1),
+                    $lon_min + $cell_size*$i,
+                    $lon_min + $cell_size*($i+1)
+                );
 
+                if ($citizens == 0) {
+                    $color = "#fffade";
+                }
                 $row[] = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
-                    'citizens' => $this->get_citizens_in_cell(
-                        $lat_min + $cell_size*$i,
-                        $lat_min + $cell_size*($i+1),
-                        $lon_min + $cell_size*$i,
-                        $lon_min + $cell_size*($i+1)
-                    ),
+                    'citizens' => $citizens,
                     'color' => $color
                 );
             }
