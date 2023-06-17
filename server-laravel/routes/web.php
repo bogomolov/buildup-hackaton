@@ -31,7 +31,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/testgetarray', function () {
-    return RenderQueryController::query(
+    $request = new Illuminate\Http\Request(
         [
             'box_coords' => [ 
                 0 => [
@@ -43,6 +43,9 @@ Route::get('/testgetarray', function () {
             ]
         ]
     );
+    $t = new RenderQueryController();
+    return $t->query($request);
+    
 });
 
 Route::middleware('auth')->group(function () {

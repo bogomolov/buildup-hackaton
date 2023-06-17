@@ -37,10 +37,10 @@ class RenderQueryController extends Controller
 
         # $query = RenderQuery::findOrFail($request->input('request_id'));
 
-        $lat_min = min($box_coords[0]->latitude, $box_coords[1]->latitude);
-        $lat_max = max($box_coords[0]->latitude, $box_coords[1]->latitude);
-        $lon_min = min($box_coords[0]->longitude, $box_coords[1]->longitude);
-        $lon_max = max($box_coords[0]->longitude, $box_coords[1]->longitude);
+        $lat_min = min($box_coords[0]['latitude'], $box_coords[1]['latitude']);
+        $lat_max = max($box_coords[0]['latitude'], $box_coords[1]['latitude']);
+        $lon_min = min($box_coords[0]['longitude'], $box_coords[1]['longitude']);
+        $lon_max = max($box_coords[0]['longitude'], $box_coords[1]['longitude']);
         
         $lat_delta = $lat_max - $lat_min;
         $lon_delta = $lon_max - $lon_min;
