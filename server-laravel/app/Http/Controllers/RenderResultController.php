@@ -19,22 +19,14 @@ class RenderResultController extends Controller
         return $results;
     }
 
+
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $query = RenderQuery::findOrFail($request->input('request_id'));
 
-        $lat_min = min($query->box_coords[0]->latitude, $query->box_coords[1]->latitude);
-        $lat_max = max($query->box_coords[0]->latitude, $query->box_coords[1]->latitude);
-        $lon_min = min($query->box_coords[0]->longitude, $query->box_coords[1]->longitude);
-        $lon_max = max($query->box_coords[0]->longitude, $query->box_coords[1]->longitude);
-        
-        $lat_delta = $lat_max - $lat_min;
-        $lon_delta = $lon_max - $lon_min;
-        
-        
     }
 
     /**
