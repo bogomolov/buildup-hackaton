@@ -15,6 +15,7 @@ class CityObject extends Model
         'type',
         'levels',
         'latitude',
-        'longitude'
+        'longitude',
+        'planning'
     ];
 }
