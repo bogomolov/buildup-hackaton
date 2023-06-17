@@ -19,7 +19,7 @@ class RenderQueryController extends Controller
             "distance" => 1500
         ],
         "hospital" => [
-            "color" => "#cc0000",
+            "color" => "#00cc00",
             "distance" => 2500
         ]
     ];
@@ -32,18 +32,18 @@ class RenderQueryController extends Controller
         $real_g = ($base_g - $target_g)*($real_dist/$max_dist) + $target_g;
         $real_b = ($base_b - $target_b)*($real_dist/$max_dist) + $target_b;
 
-        $real_color = sprintf("#%02x%02x%02x", $real_r, $real_g, $real_b);
+        $real_color = sprintf("#%02x%02x%02x", min(255,$real_r), min(255,$real_g), min(255,$real_b));
 
         return $real_color;
     }
 
-    public static function get_dist_from_filter_meter($lat, $lon, $filters)
+    public static function get_dist_from_filter_meter($lat, $lon, $filters, $include_planning)
     {
         $LON2KM = 78.8;
         $LAT2KM = 111;
 
-        $obj = CityObject::/*whereRaw('(latitude-?)*(latitude-?) + (longitude-?)*(longitude-?)', [$lat, $lat, $lon, $lon])
-        ->*/where('type', $filters[0])->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
+        $obj = CityObject::where('type', $filters[0])->where('planning', '<=', $include_planning)
+        ->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
         return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$LON2KM, 2));
     }
 
@@ -51,7 +51,7 @@ class RenderQueryController extends Controller
     {
         $CITIZENS_PER_FLAT = 3;
 
-        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and (planning=0 and ? = 0 or ? != 0)', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning, $include_planning])->
+        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and planning <= ?', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning])->
         where('flats', '>', 0)->sum('flats');
 
         return $flats*$CITIZENS_PER_FLAT;
@@ -69,7 +69,7 @@ class RenderQueryController extends Controller
     public function query(Request $request)
     {
         /* На какое число делить короткую сторону */
-        $DIVISOR = 20;
+        $DIVISOR = 50;
 
         $box_coords = $request->input('box_coords');
 
@@ -98,19 +98,6 @@ class RenderQueryController extends Controller
         for($i = $lat_delta/$cell_size; $i >=0 ; $i--) {
             $row = array();
             for($j = 0; $j < $lon_delta/$cell_size; $j++) {
-                $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
-                $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
-
-                $distance = $this->get_dist_from_filter_meter(
-                    $lat_center, 
-                    $lon_center, 
-                    $filters
-                );
-                $color = $this->get_color(
-                    $this->filter_params[$filters[0]]["color"], 
-                    $this->filter_params[$filters[0]]["distance"], 
-                    $distance
-                );
                 $citizens = $this->get_citizens_in_cell(
                     $lat_min + $cell_size*$i,
                     $lat_min + $cell_size*($i+1),
@@ -119,14 +106,33 @@ class RenderQueryController extends Controller
                     $include_planning
                 );
 
-                if ($citizens == 0) {
-                    $color = "#fffade";
+                $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
+                $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
+
+                foreach($this->filter_params as $filter => $params)
+                {
+                    $distance = $this->get_dist_from_filter_meter(
+                        $lat_center, 
+                        $lon_center, 
+                        [$filter]
+                    );
+                    
+                    $colors[$filter] = $this->get_color(
+                        $params["color"], 
+                        $params["distance"], 
+                        $distance
+                    );
+                
+                    if ($citizens == 0) {
+                        $colors[$filter] = "#fffade";
+                    }
                 }
+
                 $row[] = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
                     'citizens' => $citizens,
-                    'color' => $color
+                    'colors' => $colors
                 );
             }
             array_push($result, $row);
