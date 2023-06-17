@@ -9,6 +9,8 @@ import type {
 import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 import {userServices} from 'src/services/user';
 import {UserState} from "../user/user.types";
+import {mapDataServices} from "../../services/mapDrawData";
+import {MapDataState} from "../mapDrawData/mapDrawData.types";
 
 type PayloadAction<T> = ReduxPayloadAction<T>;
 
@@ -16,6 +18,7 @@ type SliceReducer<T> = SliceCaseReducers<T>;
 
 type Dependencies = {
     userServices: typeof userServices;
+    mapDataServices: typeof mapDataServices;
 };
 
 type AppDispatch = Dispatch & ThunkDispatch<RootState, Dependencies, AnyAction>;
@@ -28,6 +31,7 @@ type ThunkAsyncConfig = {
 
 type RootState = {
     user: UserState;
+    mapData: MapDataState;
 };
 
 type ThunkMiddlewareOptions = {

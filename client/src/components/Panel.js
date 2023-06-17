@@ -2,15 +2,15 @@ import React, {useRef} from 'react'
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import {useLoader} from "@react-three/fiber";
 
-import texture from 'src/assets/textureMap.jpeg';
+import texture from 'src/assets/mapScreen.png';
 
-const Panel = () => {
+const Panel = ({x = 60, z = 60}) => {
     const meshRef = useRef();
     const textureMap = useLoader(TextureLoader, texture);
 
     return (
-        <mesh rotation={[-Math.PI / 2, 0, 0]}  ref={meshRef} position={[0, -3, 0]}>
-            <planeGeometry args={[50, 50]} />
+        <mesh rotation={[-Math.PI / 2, 0, Math.PI]} ref={meshRef} position={[18, -3, 28]}>
+            <planeGeometry args={[x, z]} />
             <meshStandardMaterial map={textureMap} />
         </mesh>
     )

@@ -1,12 +1,28 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { Canvas } from '@react-three/fiber';
 import Panel from "src/components/Panel";
 import Hexagon from "src/components/Hexagon";
 
 import './MapPage.scss';
 import {OrbitControls} from "@react-three/drei";
+import {useDispatch} from "react-redux";
+import {fetchMapDataAction} from "../../store/mapDrawData/mapDrawData.actions";
+import {AppDispatch} from "../../store/types";
+import {useMapData} from "../../store/mapDrawData/mapDrawData.selectors";
 
 const MapPage = () => {
+    const dispatch = useDispatch<AppDispatch>();
+
+    const mapData = useMapData();
+
+    useEffect(() => {
+        dispatch(fetchMapDataAction(null))
+    }, []);
+
+    if (!mapData[0]) {
+        return <></>
+    }
+
     return (
         <div>
             <Canvas
@@ -16,29 +32,22 @@ const MapPage = () => {
                     position: [0, 0, 9],
                 }}
             >
-                <ambientLight intensity={0.5} />
-                <directionalLight position={[1, 1, 1]} intensity={0.8} />
-                <Hexagon posX={0} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={1} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={2} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={3} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={4} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={5} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={6} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={7} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={8} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={9} posZ={0} height={2} color={'#ffff00'}/>
-                <Hexagon posX={0.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={1.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={2.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={3.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={4.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={5.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={6.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={7.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={8.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Hexagon posX={9.5} posZ={0.9} height={2} color={'#ffff00'}/>
-                <Panel />
+                <ambientLight intensity={0.3} />
+                <directionalLight position={[1, 1, 1]} intensity={0.5} />
+                {mapData.map((item,firstIndex) => {
+                    return item.map((item, insideIndex) => {
+                        const even = insideIndex % 2;
+                        return (
+                            <Hexagon
+                                posX={firstIndex + (even / 2)}
+                                posZ={insideIndex}
+                                height={item.citizens / 100}
+                                color={firstIndex === 0 && insideIndex === 0 ? '#000' : item.color}
+                            />
+                        )
+                    })
+                })}
+                <Panel x={mapData.length * 2} z={mapData[0].length * 2} />
                 <OrbitControls enableDamping={true} />
             </Canvas>
         </div>

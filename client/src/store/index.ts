@@ -1,6 +1,7 @@
 import {AnyAction, combineReducers, configureStore} from '@reduxjs/toolkit';
 
 import {userServices} from 'src/services/user';
+import {mapDataServices} from 'src/services/mapDrawData';
 import type {
     Dependencies,
     Middlewares,
@@ -8,15 +9,17 @@ import type {
     RootState
 } from './types';
 
-// import { userReducer } from 'src/reduxStore/user/user.slice';
 import {userReducer} from 'src/store/user/user.slice';
+import {mapDataReducer} from "./mapDrawData/mapDrawData.slice";
 
 const dependencies: Dependencies = {
     userServices,
+    mapDataServices
 };
 
 const reducers: Reducers = {
     user: userReducer,
+    mapData: mapDataReducer
 };
 
 const rootReducer = combineReducers(reducers);
