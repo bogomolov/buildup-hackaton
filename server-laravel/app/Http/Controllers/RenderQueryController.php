@@ -47,11 +47,11 @@ class RenderQueryController extends Controller
         return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$LON2KM, 2));
     }
 
-    public static function get_citizens_in_cell($lat_min, $lat_max, $lon_min, $lon_max)
+    public static function get_citizens_in_cell($lat_min, $lat_max, $lon_min, $lon_max, $include_planning)
     {
         $CITIZENS_PER_FLAT = 3;
 
-        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ?', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1])->
+        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and (planning=0 or ? != 0)', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning])->
         where('flats', '>', 0)->sum('flats');
 
         return $flats*$CITIZENS_PER_FLAT;
@@ -74,6 +74,12 @@ class RenderQueryController extends Controller
         $box_coords = $request->input('box_coords');
 
         $filters = $request->input('filters');
+
+        if ($request->has('planning')) {
+            $include_planning = $request->input('planning');
+        } else {
+            $include_planning = 0;
+        }
 
         # $query = RenderQuery::findOrFail($request->input('request_id'));
 
@@ -109,7 +115,8 @@ class RenderQueryController extends Controller
                     $lat_min + $cell_size*$i,
                     $lat_min + $cell_size*($i+1),
                     $lon_min + $cell_size*$i,
-                    $lon_min + $cell_size*($i+1)
+                    $lon_min + $cell_size*($i+1),
+                    $include_planning
                 );
 
                 if ($citizens == 0) {
