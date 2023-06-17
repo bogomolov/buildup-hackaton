@@ -37,13 +37,13 @@ class RenderQueryController extends Controller
         return $real_color;
     }
 
-    public static function get_dist_from_filter_meter($lat, $lon, $filters)
+    public static function get_dist_from_filter_meter($lat, $lon, $filters, $include_planning)
     {
         $LON2KM = 78.8;
         $LAT2KM = 111;
 
-        $obj = CityObject::/*whereRaw('(latitude-?)*(latitude-?) + (longitude-?)*(longitude-?)', [$lat, $lat, $lon, $lon])
-        ->*/where('type', $filters[0])->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
+        $obj = CityObject::where('type', $filters[0])->where('planning', '<=', $include_planning)
+        ->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
         return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$LON2KM, 2));
     }
 
@@ -51,7 +51,7 @@ class RenderQueryController extends Controller
     {
         $CITIZENS_PER_FLAT = 3;
 
-        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and (planning=0 and ? = 0 or ? != 0)', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning, $include_planning])->
+        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and planning <= ?', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning])->
         where('flats', '>', 0)->sum('flats');
 
         return $flats*$CITIZENS_PER_FLAT;
