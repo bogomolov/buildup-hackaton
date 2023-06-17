@@ -98,19 +98,6 @@ class RenderQueryController extends Controller
         for($i = $lat_delta/$cell_size; $i >=0 ; $i--) {
             $row = array();
             for($j = 0; $j < $lon_delta/$cell_size; $j++) {
-                $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
-                $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
-
-                $distance = $this->get_dist_from_filter_meter(
-                    $lat_center, 
-                    $lon_center, 
-                    $filters
-                );
-                $color = $this->get_color(
-                    $this->filter_params[$filters[0]]["color"], 
-                    $this->filter_params[$filters[0]]["distance"], 
-                    $distance
-                );
                 $citizens = $this->get_citizens_in_cell(
                     $lat_min + $cell_size*$i,
                     $lat_min + $cell_size*($i+1),
@@ -119,14 +106,33 @@ class RenderQueryController extends Controller
                     $include_planning
                 );
 
-                if ($citizens == 0) {
-                    $color = "#fffade";
+                $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
+                $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
+
+                foreach($this->filter_params as $filter => $params)
+                {
+                    $distance = $this->get_dist_from_filter_meter(
+                        $lat_center, 
+                        $lon_center, 
+                        [$filter]
+                    );
+                    
+                    $colors[$filter] = $this->get_color(
+                        $params["color"], 
+                        $params["distance"], 
+                        $distance
+                    );
+                
+                    if ($citizens == 0) {
+                        $colors[$filter] = "#fffade";
+                    }
                 }
+
                 $row[] = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
                     'citizens' => $citizens,
-                    'color' => $color
+                    'colors' => $colors
                 );
             }
             array_push($result, $row);
