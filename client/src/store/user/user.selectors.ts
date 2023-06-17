@@ -13,7 +13,7 @@ const useGetUserId = () =>
     }) => id,
   );
 
-const useGetToken = () =>
+const useToken = () =>
   useAppSelector(
     ({
       user: {
@@ -24,7 +24,7 @@ const useGetToken = () =>
 
 
 export {
-  useGetToken,
+  useToken,
   useGetProfile,
   useUserLoading,
   useGetUserId,

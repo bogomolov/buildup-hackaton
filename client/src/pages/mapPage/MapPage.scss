@@ -1,0 +1,9 @@
+.map-page {
+  &__canvas {
+    canvas {
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+  }
+}

@@ -1,12 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {SliceNames} from "src/store/enums";
+
+import {ThunkAsyncConfig} from 'src/store/types';
+
 import type {
     FetchUserRequset,
     FetchUserResponse,
     SignInUserRequest,
     SignInUserResponse,
 } from './user.types';
-import {ThunkAsyncConfig} from 'src/store/types';
 
 const fetchSignInAction = createAsyncThunk<
     SignInUserResponse,

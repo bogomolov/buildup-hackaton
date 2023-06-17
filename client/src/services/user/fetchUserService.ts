@@ -10,7 +10,7 @@ const fetchUserService = async (userToken: FetchUserRequset): Promise<FetchUserR
     try {
         const { data } = await axios.get<FetchUserResponse>(userURL, {
             headers: {
-                'Authorization': userToken
+                'Authorization': userToken.token
             }
         });
         return data
