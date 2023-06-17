@@ -19,7 +19,7 @@ class RenderQueryController extends Controller
             "distance" => 1500
         ],
         "hospital" => [
-            "color" => "#cc0000",
+            "color" => "#00cc00",
             "distance" => 2500
         ]
     ];
@@ -69,7 +69,7 @@ class RenderQueryController extends Controller
     public function query(Request $request)
     {
         /* На какое число делить короткую сторону */
-        $DIVISOR = 20;
+        $DIVISOR = 50;
 
         $box_coords = $request->input('box_coords');
 
