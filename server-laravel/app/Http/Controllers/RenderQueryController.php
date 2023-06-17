@@ -51,7 +51,7 @@ class RenderQueryController extends Controller
     {
         $CITIZENS_PER_FLAT = 3;
 
-        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and (planning=0 or ? != 0)', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning])->
+        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and (planning=0 and ? = 0 or ? != 0)', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning, $include_planning])->
         where('flats', '>', 0)->sum('flats');
 
         return $flats*$CITIZENS_PER_FLAT;
