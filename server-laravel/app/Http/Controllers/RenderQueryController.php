@@ -45,6 +45,7 @@ class RenderQueryController extends Controller
         $result = array();
         
         for($i = 0; $i < $lat_delta/$cell_size; $i++) {
+            $row = array();
             for($j = 0; $j < $lon_delta/$cell_size; $j++) {
                 $row[] = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
