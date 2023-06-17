@@ -13,10 +13,8 @@ class RenderQueryController extends Controller
     {
         $CITIZENS_PER_FLAT = 3;
 
-        $flats = Building::where('latitude', '>', $lat_min)->
-            where('latitude', '<', $lat_max)->
-            where('longitude', '>', $lon_min)->
-            where('longitude', '<', $lon_max)->sum('flats');
+        $flats = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ?', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1])->
+        where('flats', '>', 0)->sum('flats');
 
         return $flats*$CITIZENS_PER_FLAT;
     }
@@ -33,7 +31,7 @@ class RenderQueryController extends Controller
     public function query(Request $request)
     {
         /* На какое число делить короткую сторону */
-        $DIVISOR = 30;
+        $DIVISOR = 20;
 
         $box_coords = $request->input('box_coords');
 
