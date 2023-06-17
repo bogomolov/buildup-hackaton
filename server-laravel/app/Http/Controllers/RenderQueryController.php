@@ -9,10 +9,19 @@ use App\Models\CityObject;
 
 class RenderQueryController extends Controller
 {
-    protected $filter_colors = [
-        "school" => "#0066cc",
-        "clinic" => "#ff007f",
-        "hospital" => "#cc0000"
+    protected $filter_params = [
+        "school" => [
+            "color" => "#0066cc",
+            "distance" => 500
+        ],
+        "clinic" => [
+            "color" => "#ff007f",
+            "distance" => 1500
+        ],
+        "hospital" => [
+            "color" => "#cc0000",
+            "distance" => 2500
+        ]
     ];
 
     public static function get_color($target_color, $max_dist, $real_dist) {
@@ -34,7 +43,7 @@ class RenderQueryController extends Controller
         $LAT2KM = 111;
 
         $obj = CityObjects::/*whereRaw('(latitude-?)*(latitude-?) + (longitude-?)*(longitude-?)', [$lat, $lat, $lon, $lon])
-        ->*/whereIn('type', $filters)->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
+        ->*/where('type', $filters[0])->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
         return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$LON2KM, 2));
     }
 
@@ -86,6 +95,17 @@ class RenderQueryController extends Controller
                 $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
                 $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
 
+                $distance = $this->get_dist_from_filter_meter(
+                    $lat_center, 
+                    $lon_center, 
+                    $filters
+                );
+                $color = $this->get_color(
+                    $filter_params[$filters[0]]["color"], 
+                    $filter_params[$filters[0]]["distance"], 
+                    $distance
+                );
+
                 $row[] = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
@@ -95,7 +115,7 @@ class RenderQueryController extends Controller
                         $lon_min + $cell_size*$i,
                         $lon_min + $cell_size*($i+1)
                     ),
-                    'color' => '#FFDDAA'
+                    'color' => $color
                 );
             }
             array_push($result, $row);
