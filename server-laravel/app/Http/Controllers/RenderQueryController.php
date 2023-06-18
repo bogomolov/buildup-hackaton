@@ -9,7 +9,7 @@ use App\Models\CityObject;
 
 class RenderQueryController extends Controller
 {
-    protected $filter_params = [
+    protected static $filter_params = [
         "school" => [
             "color" => "#0066cc",
             "distance" => 800
@@ -21,14 +21,18 @@ class RenderQueryController extends Controller
         "hospital" => [
             "color" => "#00cc00",
             "distance" => 2500
+        ],
+        "general" => [
+            "color" => "#fffade",
+            "distance" => 50000
         ]
     ];
 
-    protected $LON2KM = 78.8;
-    protected $LAT2KM = 111;
+    protected static $LON2KM = 78.8;
+    protected static $LAT2KM = 111;
 
     public static function get_color($target_color, $max_dist, $real_dist) {
-        list($base_r, $base_g, $base_b) = sscanf('#fffade', "#%02x%02x%02x");
+        list($base_r, $base_g, $base_b) = sscanf(self::$filter_params['general']['color'], "#%02x%02x%02x");
         list($target_r, $target_g, $target_b) = sscanf($target_color, "#%02x%02x%02x");
 
         $real_r = ($base_r - $target_r)*($real_dist/$max_dist) + $target_r;
@@ -44,7 +48,8 @@ class RenderQueryController extends Controller
     {
         $obj = CityObject::where('type', $filters[0])->where('planning', '<=', $include_planning)
         ->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
-        return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$this->LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$this->LON2KM, 2));
+        if (is_null($obj)) {return 100000;}
+        return sqrt(pow(($obj->latitude*1000 - $lat*1000)*self::$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*self::$LON2KM, 2));
     }
 
     public static function get_citizens_in_cell($lat_min, $lat_max, $lon_min, $lon_max, $include_planning)
@@ -55,6 +60,16 @@ class RenderQueryController extends Controller
         where('flats', '>', 0)->sum('flats');
 
         return $flats*$CITIZENS_PER_FLAT;
+    }
+
+    public static function get_aged_buildings($lat_min, $lat_max, $lon_min, $lon_max, $include_planning)
+    {
+        $constr_year = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and planning <= ?', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning])->
+        where('constr_year', '>', 0)->min('constr_year');
+
+        if ($constr_year == 0) {$constr_year = 2023;}
+
+        return 2023-$constr_year;
     }
 
     /**
@@ -106,10 +121,18 @@ class RenderQueryController extends Controller
                     $include_planning
                 );
 
+                $max_age = $this->get_aged_buildings(
+                    $lat_min + $cell_size*$i,
+                    $lat_min + $cell_size*($i+1),
+                    $lon_min + $cell_size*$j,
+                    $lon_min + $cell_size*($j+1),
+                    $include_planning
+                );
+
                 $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
                 $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
 
-                foreach($this->filter_params as $filter => $params)
+                foreach(self::$filter_params as $filter => $params)
                 {
                     $distance = $this->get_dist_from_filter_meter(
                         $lat_center, 
@@ -125,21 +148,30 @@ class RenderQueryController extends Controller
                     );
                 
                     if ($citizens == 0) {
-                        $colors[$filter] = "#fffade";
+                        $colors[$filter] = self::$filter_params['general']['color'];
                     }
                 }
 
-                $row[] = array(
+                $cell = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
                     'citizens' => $citizens,
-                    'colors' => $colors
+                    'max_age' => $max_age
                 );
+
+                $row[] = array_merge($cell, $colors);
             }
             array_push($data, $row);
         }
 
-        return ['data' => $data, 'params' => $this->filter_params];
+        return [
+            'data' => $data, 
+            'params' => self::$filter_params, 
+            'sizes' => [
+                'lat_meters' => round($cell_size*self::$LAT2KM*1000),
+                'lon_meters' => round($cell_size*self::$LON2KM*1000)
+                ]
+            ];
     }
 
     /**
