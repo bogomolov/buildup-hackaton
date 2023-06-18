@@ -4,8 +4,9 @@ import './ModalWindow.scss';
 import {setDataImMapItem} from '../../store/mapDrawData/mapDrawData.slice';
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../../store/types';
-import {useMapData} from '../../store/mapDrawData/mapDrawData.selectors';
+// import {useMapData} from '../../store/mapDrawData/mapDrawData.selectors';
 import Button from "../button/Button";
+import {useMapFilter} from "../../store/mapDrawData/mapDrawData.selectors";
 
 type ModalType = {
     show: boolean;
@@ -19,7 +20,8 @@ type ModalType = {
 const ModalWindow = ({show, setShow, selectedItemPos}: ModalType) => {
     const dispatch = useDispatch<AppDispatch>();
     const [active, setActive] = useState<boolean>(false);
-    const mapData = useMapData();
+    const filter = useMapFilter();
+    // const mapData = useMapData();
 
     useEffect(() => {
         if (show) {
@@ -28,17 +30,11 @@ const ModalWindow = ({show, setShow, selectedItemPos}: ModalType) => {
             setActive(false);
         }
     }, [show])
-    const changeValueInMap = (firstIndex: number, secondIndex: number) => {
+    const changeValueInMap = (firstIndex: number, secondIndex: number, type: 'school' | 'clinic' | 'hospital') => {
         dispatch(setDataImMapItem({
             x: secondIndex,
             z: firstIndex,
-            data: {
-                colors: {
-                    school: '#ffff00',
-                    clinic: mapData[secondIndex][firstIndex].colors.clinic,
-                    hospital: mapData[secondIndex][firstIndex].colors.hospital
-                }
-            }
+            changed: type
         }));
     }
 
@@ -52,12 +48,11 @@ const ModalWindow = ({show, setShow, selectedItemPos}: ModalType) => {
                         </p>
                     </div>
                     <div className={'modal__body'}>
-
+                        <Button handleClick={() => {
+                            changeValueInMap(selectedItemPos.x, selectedItemPos.z, filter);
+                            setShow(false);
+                        }} title={'Добавить'} />
                     </div>
-                    <Button handleClick={() => {
-                        changeValueInMap(selectedItemPos.x, selectedItemPos.z);
-                        setShow(false);
-                    }} title={'Расчитать изменения'} />
                 </div>
             </div>
         );

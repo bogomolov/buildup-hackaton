@@ -18,7 +18,7 @@ const Header = () => {
             <div className={'header__logo-container'}>
                 <img className={'header__logo'} src={logoOrange}/>
                 <p className={'header__logo-text'}>
-                    S.o.d.i
+                    Sodi
                 </p>
             </div>
             <div className={'header__button-container'}>

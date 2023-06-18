@@ -53,10 +53,6 @@ const MapPage = () => {
         return null;
     }
 
-    if (!mapData[0]) {
-        return <></>
-    }
-
     return (
         <div>
             <Header />
@@ -70,20 +66,27 @@ const MapPage = () => {
             >
                 <ambientLight intensity={0.3} />
                 <directionalLight position={[1, 1, 1]} intensity={0.5} />
-                {mapData.map((item,firstIndex) => {
+                {mapData[0]
+                    ? mapData.map((item,firstIndex) => {
                     return item.map((item, lastIndex) => {
                         return (
                             <Hexagon
                                 posZ={firstIndex}
                                 posX={lastIndex}
                                 height={item.citizens / 100}
-                                color={item.colors[filter]}
+                                color={item[filter]}
                                 click={openModal}
                             />
                         )
                     })
-                })}
-                <Panel x={mapData.length * 2} z={mapData[0].length * 2} />
+                })
+                : null}
+                {
+                    mapData.length && mapData[0].length
+                        ? (<Panel x={mapData.length * 2} z={mapData[0].length * 2} />)
+                        : null
+                }
+
                 <OrbitControls enableDamping={true} />
                 <SkyBox />
                 <CameraControls />
