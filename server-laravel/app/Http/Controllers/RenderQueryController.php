@@ -133,9 +133,8 @@ class RenderQueryController extends Controller
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
                     'citizens' => $citizens);
-                array_merge($cell, $colors);
 
-                $row[] = $cell;
+                $row[] = array_merge($cell, $colors);
             }
             array_push($data, $row);
         }
