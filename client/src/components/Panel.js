@@ -9,7 +9,7 @@ const Panel = ({x = 60, z = 60}) => {
     const textureMap = useLoader(TextureLoader, texture);
 
     return (
-        <mesh rotation={[-Math.PI / 2, 0, Math.PI]} ref={meshRef} position={[18, -3, 28]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} ref={meshRef} position={[50, -1, 70]}>
             <planeGeometry args={[x, z]} />
             <meshStandardMaterial map={textureMap} />
         </mesh>

@@ -17,18 +17,6 @@
     align-items: center;
   }
 
-  &__submit-button {
-    min-width: 100px;
-    border: none;
-    background-color: #333333;
-    border-radius: 10px;
-    margin-top: 20px;
-    cursor: pointer;
-    padding: 10px;
-    font-size: 16px;
-    color: #fff
-  }
-
   &__input {
     width: -webkit-fill-available;
     height: 48px;

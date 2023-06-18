@@ -7,6 +7,7 @@ import {useToken} from "src/store/user/user.selectors";
 
 import './LoginPage.scss';
 import {useHistory} from "react-router-dom";
+import Button from "../../components/button/Button";
 
 const LoginPage = () => {
     const token = useToken();
@@ -54,7 +55,7 @@ const LoginPage = () => {
                     </h3>
                     <input className={'login-page__input'} value={password} onChange={changePassword} type={'password'} placeholder={'Введите пароль'}/>
                 </div>
-                <button className={'login-page__submit-button'} onClick={handleClick}>Отправить</button>
+                <Button handleClick={handleClick} title={'Отправить'} />
             </div>
         </div>
     );

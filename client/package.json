@@ -30,7 +30,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@types/leaflet": "^1.9.3"
+    "@types/leaflet": "^1.9.3",
+    "@types/three": "^0.152.1"
   },
   "scripts": {
     "start": "react-scripts start",
