@@ -9,7 +9,7 @@ use App\Models\CityObject;
 
 class RenderQueryController extends Controller
 {
-    protected $filter_params = [
+    protected static $filter_params = [
         "school" => [
             "color" => "#0066cc",
             "distance" => 800
@@ -32,7 +32,7 @@ class RenderQueryController extends Controller
     protected static $LAT2KM = 111;
 
     public static function get_color($target_color, $max_dist, $real_dist) {
-        list($base_r, $base_g, $base_b) = sscanf('#fffade', "#%02x%02x%02x");
+        list($base_r, $base_g, $base_b) = sscanf(self::$filter_params['general']['color'], "#%02x%02x%02x");
         list($target_r, $target_g, $target_b) = sscanf($target_color, "#%02x%02x%02x");
 
         $real_r = ($base_r - $target_r)*($real_dist/$max_dist) + $target_r;
@@ -113,7 +113,7 @@ class RenderQueryController extends Controller
                 $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
                 $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
 
-                foreach($this->filter_params as $filter => $params)
+                foreach(self::$filter_params as $filter => $params)
                 {
                     $distance = $this->get_dist_from_filter_meter(
                         $lat_center, 
@@ -129,7 +129,7 @@ class RenderQueryController extends Controller
                     );
                 
                     if ($citizens == 0) {
-                        $colors[$filter] = "#fffade";
+                        $colors[$filter] = self::$filter_params['general']['color'];
                     }
                 }
 
@@ -143,7 +143,7 @@ class RenderQueryController extends Controller
             array_push($data, $row);
         }
 
-        return ['data' => $data, 'params' => $this->filter_params];
+        return ['data' => $data, 'params' => self::$filter_params];
     }
 
     /**
