@@ -62,6 +62,14 @@ class RenderQueryController extends Controller
         return $flats*$CITIZENS_PER_FLAT;
     }
 
+    public static function get_aged_buildings($lat_min, $lat_max, $lon_min, $lon_max, $include_planning)
+    {
+        $constr_year = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and planning <= ?', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning])->
+        where('constr_year', '>', 0)->min('constr_year');
+
+        return 2023-$constr_year;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -111,6 +119,14 @@ class RenderQueryController extends Controller
                     $include_planning
                 );
 
+                $max_age = $this->get_aged_buildings(
+                    $lat_min + $cell_size*$i,
+                    $lat_min + $cell_size*($i+1),
+                    $lon_min + $cell_size*$j,
+                    $lon_min + $cell_size*($j+1),
+                    $include_planning
+                );
+
                 $lat_center = $lat_min + $cell_size/2 + $i*$cell_size;
                 $lon_center = $lon_min + $cell_size/2 + $j*$cell_size;
 
@@ -137,14 +153,23 @@ class RenderQueryController extends Controller
                 $cell = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
-                    'citizens' => $citizens);
+                    'citizens' => $citizens,
+                    'max_age' => $max_age
+                );
 
                 $row[] = array_merge($cell, $colors);
             }
             array_push($data, $row);
         }
 
-        return ['data' => $data, 'params' => self::$filter_params];
+        return [
+            'data' => $data, 
+            'params' => self::$filter_params, 
+            'sizes' => [
+                'lat_meters' => $cell_size*$LAT2KM*1000,
+                'lon_meters' => $cell_size*$LON2KM*1000
+                ]
+            ];
     }
 
     /**
