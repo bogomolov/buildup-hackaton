@@ -114,7 +114,8 @@ class RenderQueryController extends Controller
                     $distance = $this->get_dist_from_filter_meter(
                         $lat_center, 
                         $lon_center, 
-                        [$filter]
+                        [$filter],
+                        $include_planning
                     );
                     
                     $colors[$filter] = $this->get_color(
