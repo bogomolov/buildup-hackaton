@@ -67,6 +67,8 @@ class RenderQueryController extends Controller
         $constr_year = Building::whereRaw('latitude*1000 between ? and ? and longitude*1000 between ? and ? and planning <= ?', [$lat_min*1000,$lat_max*1000+1,$lon_min*1000,$lon_max*1000+1, $include_planning])->
         where('constr_year', '>', 0)->min('constr_year');
 
+        if ($constr_year == 0) {$constr_year = 2023;}
+        
         return 2023-$constr_year;
     }
 
