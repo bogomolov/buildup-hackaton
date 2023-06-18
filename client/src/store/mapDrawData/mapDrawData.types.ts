@@ -1,8 +1,8 @@
 type HexagonItem = {
-  'latitude': number,
-  'longitude': number,
-  'citizens': 0,
-  'colors': {
+  latitude: number,
+  longitude: number,
+  citizens: 0,
+  colors: {
     school: string,
     clinic: string,
     hospital: string
@@ -12,7 +12,7 @@ type HexagonItem = {
 type FetchMapData = [HexagonItem[]]
 
 type MapDataState = {
-  'filter' : 'school' | 'clinic' | 'hospital';
+  filter : 'school' | 'clinic' | 'hospital';
   data: FetchMapData | [];
   loading: boolean;
 }

@@ -1,31 +1,40 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Canvas, useThree } from '@react-three/fiber';
 import {
     CubeTextureLoader
 } from 'three';
 import {CameraControls, OrbitControls} from '@react-three/drei';
 import {useDispatch} from 'react-redux';
-import {fetchMapDataAction} from 'src/store/mapDrawData/mapDrawData.actions';
+
 import {AppDispatch} from 'src/store/types';
+
+import {fetchMapDataAction} from 'src/store/mapDrawData/mapDrawData.actions';
 import {useMapData, useMapFilter} from 'src/store/mapDrawData/mapDrawData.selectors';
+
 import Panel from 'src/components/Panel';
 import Hexagon from 'src/components/Hexagon';
 import Header from 'src/components/header/Header';
-import Button from '../../components/button/Button';
 
 import './MapPage.scss';
+import ModalWindow from 'src/components/modalWindow/ModalWindow';
 
 const MapPage = () => {
     const dispatch = useDispatch<AppDispatch>();
-    let count = 0;
+
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [selectedItemPos, setSelectedItemPos] = useState<{ x: number, z: number }>({x: 0, z: 0});
 
     const filter = useMapFilter();
-
     const mapData = useMapData();
 
     useEffect(() => {
-        dispatch(fetchMapDataAction(null))
+        dispatch(fetchMapDataAction(null));
     }, []);
+
+    const openModal = (x: number, z: number) => {
+        setSelectedItemPos({x, z})
+        setShowModal(true);
+    }
 
     function SkyBox() {
         const { scene } = useThree();
@@ -63,13 +72,13 @@ const MapPage = () => {
                 <directionalLight position={[1, 1, 1]} intensity={0.5} />
                 {mapData.map((item,firstIndex) => {
                     return item.map((item, lastIndex) => {
-                        const even = lastIndex % 2;
                         return (
                             <Hexagon
-                                posZ={firstIndex + (even / 2)}
+                                posZ={firstIndex}
                                 posX={lastIndex}
                                 height={item.citizens / 100}
                                 color={item.colors[filter]}
+                                click={openModal}
                             />
                         )
                     })
@@ -79,7 +88,7 @@ const MapPage = () => {
                 <SkyBox />
                 <CameraControls />
             </Canvas>
-            <Button handleClick={() => console.log(count)} title={'kjsdfnvk'} />
+            <ModalWindow selectedItemPos={selectedItemPos} show={showModal} setShow={setShowModal}/>
         </div>
     );
 };

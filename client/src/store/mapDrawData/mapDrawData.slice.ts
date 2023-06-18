@@ -4,7 +4,7 @@ import { SliceNames } from 'src/store/enums';
 import {
   fetchMapDataAction
 } from 'src/store/mapDrawData/mapDrawData.actions';
-import {MapDataState} from "./mapDrawData.types";
+import {HexagonItem, MapDataState} from './mapDrawData.types';
 
 const initialState: MapDataState = {
     loading: false,
@@ -18,6 +18,13 @@ const mapDrawDataSlice = createSlice({
   reducers: {
       setFilter: (state, {payload}) => {
           state.filter = payload;
+      },
+      setDataImMapItem: (state, {payload : {x, z, data}}: {payload: {x: number, z: number, data: Partial<HexagonItem>}}) => {
+          state.data[x][z] = {
+              ...state.data[x][z],
+              ...data
+          }
+          console.log(state.data[x][z])
       }
   },
   extraReducers: (builder) => {
@@ -37,5 +44,5 @@ const mapDrawDataSlice = createSlice({
 
 export const {
     reducer: mapDataReducer,
-    actions: {setFilter}
+    actions: {setFilter, setDataImMapItem}
 } = mapDrawDataSlice;
