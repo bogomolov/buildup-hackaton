@@ -24,8 +24,8 @@ class RenderQueryController extends Controller
         ]
     ];
 
-    protected $LON2KM = 78.8;
-    protected $LAT2KM = 111;
+    protected static $LON2KM = 78.8;
+    protected static $LAT2KM = 111;
 
     public static function get_color($target_color, $max_dist, $real_dist) {
         list($base_r, $base_g, $base_b) = sscanf('#fffade', "#%02x%02x%02x");
@@ -44,7 +44,7 @@ class RenderQueryController extends Controller
     {
         $obj = CityObject::where('type', $filters[0])->where('planning', '<=', $include_planning)
         ->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
-        return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$this->LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$this->LON2KM, 2));
+        return sqrt(pow(($obj->latitude*1000 - $lat*1000)*self::$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*self::$LON2KM, 2));
     }
 
     public static function get_citizens_in_cell($lat_min, $lat_max, $lon_min, $lon_max, $include_planning)
@@ -129,12 +129,13 @@ class RenderQueryController extends Controller
                     }
                 }
 
-                $row[] = array(
+                $cell[] = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
-                    'citizens' => $citizens,
-                    'colors' => $colors
-                );
+                    'citizens' => $citizens);
+                array_push($cell, $colors);
+
+                $row[] = $cell;
             }
             array_push($data, $row);
         }
