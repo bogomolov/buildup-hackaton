@@ -166,8 +166,8 @@ class RenderQueryController extends Controller
             'data' => $data, 
             'params' => self::$filter_params, 
             'sizes' => [
-                'lat_meters' => $cell_size*$LAT2KM*1000,
-                'lon_meters' => $cell_size*$LON2KM*1000
+                'lat_meters' => $cell_size*self::$LAT2KM*1000,
+                'lon_meters' => $cell_size*self::$LON2KM*1000
                 ]
             ];
     }
