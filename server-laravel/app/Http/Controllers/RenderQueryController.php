@@ -68,7 +68,7 @@ class RenderQueryController extends Controller
         where('constr_year', '>', 0)->min('constr_year');
 
         if ($constr_year == 0) {$constr_year = 2023;}
-        
+
         return 2023-$constr_year;
     }
 
@@ -168,8 +168,8 @@ class RenderQueryController extends Controller
             'data' => $data, 
             'params' => self::$filter_params, 
             'sizes' => [
-                'lat_meters' => $cell_size*self::$LAT2KM*1000,
-                'lon_meters' => $cell_size*self::$LON2KM*1000
+                'lat_meters' => round($cell_size*self::$LAT2KM*1000),
+                'lon_meters' => round($cell_size*self::$LON2KM*1000)
                 ]
             ];
     }
