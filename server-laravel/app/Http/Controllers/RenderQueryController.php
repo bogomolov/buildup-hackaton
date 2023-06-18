@@ -21,6 +21,10 @@ class RenderQueryController extends Controller
         "hospital" => [
             "color" => "#00cc00",
             "distance" => 2500
+        ],
+        "general" => [
+            "color" => "#fffade",
+            "distance" => 50000
         ]
     ];
 
