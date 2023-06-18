@@ -12,7 +12,7 @@ class RenderQueryController extends Controller
     protected $filter_params = [
         "school" => [
             "color" => "#0066cc",
-            "distance" => 500
+            "distance" => 800
         ],
         "clinic" => [
             "color" => "#ff007f",
