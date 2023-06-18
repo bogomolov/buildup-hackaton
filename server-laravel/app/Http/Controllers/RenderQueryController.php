@@ -24,6 +24,9 @@ class RenderQueryController extends Controller
         ]
     ];
 
+    protected $LON2KM = 78.8;
+    protected $LAT2KM = 111;
+
     public static function get_color($target_color, $max_dist, $real_dist) {
         list($base_r, $base_g, $base_b) = sscanf('#fffade', "#%02x%02x%02x");
         list($target_r, $target_g, $target_b) = sscanf($target_color, "#%02x%02x%02x");
@@ -39,12 +42,9 @@ class RenderQueryController extends Controller
 
     public static function get_dist_from_filter_meter($lat, $lon, $filters, $include_planning)
     {
-        $LON2KM = 78.8;
-        $LAT2KM = 111;
-
         $obj = CityObject::where('type', $filters[0])->where('planning', '<=', $include_planning)
         ->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
-        return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$LON2KM, 2));
+        return sqrt(pow(($obj->latitude*1000 - $lat*1000)*$this->LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*$this->LON2KM, 2));
     }
 
     public static function get_citizens_in_cell($lat_min, $lat_max, $lon_min, $lon_max, $include_planning)
@@ -93,7 +93,7 @@ class RenderQueryController extends Controller
         
         $cell_size = min($lat_delta, $lon_delta)/$DIVISOR;
 
-        $result = array();
+        $data = array();
         
         for($i = $lat_delta/$cell_size; $i >=0 ; $i--) {
             $row = array();
@@ -136,10 +136,10 @@ class RenderQueryController extends Controller
                     'colors' => $colors
                 );
             }
-            array_push($result, $row);
+            array_push($data, $row);
         }
 
-        return $result;
+        return ['data' => $data, 'params' => $this->filter_params];
     }
 
     /**
