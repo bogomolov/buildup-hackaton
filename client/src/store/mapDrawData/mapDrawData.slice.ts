@@ -41,6 +41,9 @@ const mapDrawDataSlice = createSlice({
       setFilter: (state, {payload}) => {
           state.filter = payload;
       },
+      addApartments: (state, {payload : {x, z, apartments}}: {payload: {x: number, z: number, apartments: number}}) => {
+          state.data[x][z].citizens += apartments + 3;
+      },
       setDataImMapItem: (state, {payload : {x, z, changed}}: {payload: {x: number, z: number, changed: 'school' | 'clinic' | 'hospital'}}) => {
           state.data[x][z][changed] = state.params[changed].color;
           const distance = state.params[changed].distance;
@@ -116,5 +119,9 @@ const mapDrawDataSlice = createSlice({
 
 export const {
     reducer: mapDataReducer,
-    actions: {setFilter, setDataImMapItem}
+    actions: {
+        setFilter,
+        setDataImMapItem,
+        addApartments
+    }
 } = mapDrawDataSlice;

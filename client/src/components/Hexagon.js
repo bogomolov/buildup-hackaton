@@ -9,10 +9,10 @@ const Hexagon = ({height, posX, posZ, color, click}) => {
     return (
         <mesh onClick={(e) => {
             e.stopPropagation();
-            height > 0 && click(posX, posZ);
+            click(posX, posZ);
         }} rotation={[-Math.PI, Math.PI / 2, 0]} ref={meshRef} position={[posX / (79/111), height / 2, ((posZ + (even / 2)) * ratio) / (79/111)]}>
             <cylinderGeometry args={[1, 1, height, 6]} />
-            <meshBasicMaterial transparent opacity={height === 0 ? 0 : 0.9} color={color} />
+            <meshBasicMaterial transparent opacity={height === 0 ? 0.3 : 0.9} color={color} />
         </mesh>
     )
 }
