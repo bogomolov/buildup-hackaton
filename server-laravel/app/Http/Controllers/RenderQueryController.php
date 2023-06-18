@@ -48,6 +48,7 @@ class RenderQueryController extends Controller
     {
         $obj = CityObject::where('type', $filters[0])->where('planning', '<=', $include_planning)
         ->orderByRaw('(1000*latitude-1000*?)*(1000*latitude-1000*?) + (1000*longitude-1000*?)*(1000*longitude-1000*?)', [$lat, $lat, $lon, $lon])->first();
+        if (is_null($obj)) {return 100000;}
         return sqrt(pow(($obj->latitude*1000 - $lat*1000)*self::$LAT2KM,2) + pow(($obj->longitude*1000 - $lon*1000)*self::$LON2KM, 2));
     }
 
