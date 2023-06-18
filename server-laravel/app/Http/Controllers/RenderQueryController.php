@@ -129,7 +129,7 @@ class RenderQueryController extends Controller
                     }
                 }
 
-                $cell[] = array(
+                $cell = array(
                     'latitude' => $lat_min + $cell_size/2 + $i*$cell_size,
                     'longitude' => $lon_min + $cell_size/2 + $j*$cell_size,
                     'citizens' => $citizens);
