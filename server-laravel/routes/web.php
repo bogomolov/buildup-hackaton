@@ -42,7 +42,7 @@ Route::get('/testgetarray', function () {
                 ]
             ],
             'filters' => ['school'],
-            'planning' => 1
+            'planning' => 0
         ]
     );
     $t = new RenderQueryController();
